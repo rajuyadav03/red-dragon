@@ -721,10 +721,62 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#C41E3A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading...</p>
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center overflow-hidden">
+        {/* Background ambient effect */}
+        <div className="dragon-loader-bg"></div>
+
+        {/* Main loader container */}
+        <div className="dragon-loader-container">
+          {/* Dragon circle with all effects */}
+          <div className="dragon-circle">
+            {/* Breath waves emanating outward */}
+            <div className="dragon-breath">
+              <div className="breath-wave"></div>
+              <div className="breath-wave"></div>
+              <div className="breath-wave"></div>
+            </div>
+
+            {/* Glowing orbs rotating around */}
+            <div className="dragon-orbs">
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+              <div className="dragon-orb"></div>
+            </div>
+
+            {/* Outer rotating ring */}
+            <div className="dragon-ring-outer"></div>
+
+            {/* Middle ring with glow */}
+            <div className="dragon-ring-middle"></div>
+
+            {/* Fire particles */}
+            <div className="dragon-fire-particles">
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+              <div className="fire-particle"></div>
+            </div>
+
+            {/* Inner core with dragon */}
+            <div className="dragon-core">
+              <span className="dragon-emoji">🐉</span>
+            </div>
+          </div>
+
+          {/* Loading text */}
+          <div className="text-center">
+            <p className="dragon-loading-text">Red Dragon</p>
+            <p className="dragon-loading-subtitle">Preparing your feast...</p>
+          </div>
         </div>
       </div>
     );

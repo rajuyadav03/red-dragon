@@ -136,6 +136,378 @@ body {
   scrollbar-width: none;
 }
 
+/* ========== DRAGON LOADER ANIMATION ========== */
+
+.dragon-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* Main Dragon Circle */
+.dragon-circle {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+/* Outer rotating ring with Chinese pattern effect */
+.dragon-ring-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--dragon-gold);
+  border-right-color: var(--dragon-red);
+  animation: dragonSpin 2s linear infinite;
+}
+
+.dragon-ring-outer::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  animation: dragonSpinReverse 3s linear infinite;
+}
+
+/* Middle ring with fire glow effect */
+.dragon-ring-middle {
+  position: absolute;
+  inset: 15px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--dragon-red);
+  border-bottom-color: var(--dragon-gold);
+  animation: dragonSpin 1.5s linear infinite reverse;
+  box-shadow: 0 0 20px rgba(196, 30, 58, 0.4),
+    inset 0 0 20px rgba(196, 30, 58, 0.2);
+}
+
+/* Inner core with dragon emoji */
+.dragon-core {
+  position: absolute;
+  inset: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%,
+      rgba(196, 30, 58, 0.3) 0%,
+      rgba(10, 10, 10, 0.9) 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: dragonPulse 1.5s ease-in-out infinite;
+}
+
+.dragon-emoji {
+  font-size: 2.5rem;
+  animation: dragonFloat 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(196, 30, 58, 0.8));
+}
+
+/* Fire particles container */
+.dragon-fire-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fire-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--dragon-gold), var(--dragon-red));
+  opacity: 0;
+  animation: fireParticle 2s ease-out infinite;
+}
+
+.fire-particle:nth-child(1) {
+  left: 50%;
+  top: 0;
+  animation-delay: 0s;
+}
+
+.fire-particle:nth-child(2) {
+  left: 85%;
+  top: 15%;
+  animation-delay: 0.3s;
+}
+
+.fire-particle:nth-child(3) {
+  right: 0;
+  top: 50%;
+  animation-delay: 0.6s;
+}
+
+.fire-particle:nth-child(4) {
+  right: 15%;
+  bottom: 15%;
+  animation-delay: 0.9s;
+}
+
+.fire-particle:nth-child(5) {
+  left: 50%;
+  bottom: 0;
+  animation-delay: 1.2s;
+}
+
+.fire-particle:nth-child(6) {
+  left: 15%;
+  bottom: 15%;
+  animation-delay: 1.5s;
+}
+
+.fire-particle:nth-child(7) {
+  left: 0;
+  top: 50%;
+  animation-delay: 1.8s;
+}
+
+.fire-particle:nth-child(8) {
+  left: 15%;
+  top: 15%;
+  animation-delay: 0.15s;
+}
+
+/* Glowing orbs around the dragon */
+.dragon-orbs {
+  position: absolute;
+  inset: -20px;
+  animation: dragonSpin 8s linear infinite;
+}
+
+.dragon-orb {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dragon-gold);
+  box-shadow: 0 0 15px var(--dragon-gold),
+    0 0 30px rgba(212, 175, 55, 0.5);
+  animation: orbPulse 1s ease-in-out infinite alternate;
+}
+
+.dragon-orb:nth-child(1) {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  animation-delay: 0s;
+}
+
+.dragon-orb:nth-child(2) {
+  top: 15%;
+  left: 15%;
+  animation-delay: 0.25s;
+}
+
+.dragon-orb:nth-child(3) {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 0.5s;
+}
+
+.dragon-orb:nth-child(4) {
+  top: 15%;
+  right: 15%;
+  animation-delay: 0.75s;
+}
+
+.dragon-orb:nth-child(5) {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  animation-delay: 1s;
+}
+
+.dragon-orb:nth-child(6) {
+  bottom: 15%;
+  right: 15%;
+  animation-delay: 1.25s;
+}
+
+.dragon-orb:nth-child(7) {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 1.5s;
+}
+
+.dragon-orb:nth-child(8) {
+  bottom: 15%;
+  left: 15%;
+  animation-delay: 1.75s;
+}
+
+/* Loading text with shimmer effect */
+.dragon-loading-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(212, 175, 55, 1) 25%,
+      rgba(255, 255, 255, 1) 50%,
+      rgba(212, 175, 55, 1) 75%,
+      rgba(255, 255, 255, 0.3) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Subtitle text */
+.dragon-loading-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.15em;
+  margin-top: -0.5rem;
+}
+
+/* Background ambient effects */
+.dragon-loader-bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(196, 30, 58, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 30% 70%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 70% 80%, rgba(196, 30, 58, 0.1) 0%, transparent 35%);
+  pointer-events: none;
+}
+
+/* Dragon breath effect - waves emanating outward */
+.dragon-breath {
+  position: absolute;
+  inset: -60px;
+  pointer-events: none;
+}
+
+.breath-wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 30, 58, 0.3);
+  animation: breathWave 2s ease-out infinite;
+}
+
+.breath-wave:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.breath-wave:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.breath-wave:nth-child(3) {
+  animation-delay: 1s;
+}
+
+/* ========== DRAGON LOADER KEYFRAMES ========== */
+
+@keyframes dragonSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dragonSpinReverse {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes dragonPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 30px rgba(196, 30, 58, 0.3);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 50px rgba(196, 30, 58, 0.5), 0 0 80px rgba(212, 175, 55, 0.2);
+  }
+}
+
+@keyframes dragonFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-5px) scale(1.1);
+  }
+}
+
+@keyframes fireParticle {
+  0% {
+    opacity: 0;
+    transform: scale(0) translateY(0);
+  }
+
+  20% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-30px);
+  }
+}
+
+@keyframes orbPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes breathWave {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ========== END DRAGON LOADER ========== */
+
 @layer base {
   :root {
     --background: 0 0% 4%;
