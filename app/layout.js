@@ -1,4 +1,6 @@
 import './globals.css';
+import { CartProvider } from '@/context/cart-context';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
   title: 'Red Dragon Chinese Restaurant | Best Chinese Food in Mira Road',
@@ -91,8 +93,12 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="antialiased">
-        {children}
+        <CartProvider>
+          {children}
+          <Toaster position="top-center" richColors />
+        </CartProvider>
       </body>
     </html>
   );
 }
+

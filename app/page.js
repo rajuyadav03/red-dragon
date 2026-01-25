@@ -1,16 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Phone, MapPin, Clock, ChevronRight, Star, Utensils, ShieldCheck, Award, Menu as MenuIcon, X, Facebook, Instagram, Twitter, Mail, ExternalLink } from 'lucide-react';
+import { Phone, MapPin, Clock, ChevronRight, Star, Utensils, ShieldCheck, Award, Menu as MenuIcon, X, Facebook, Instagram, Twitter, Search, Grid3X3, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { CartDrawer } from '@/components/cart/CartDrawer';
+import { CartButton } from '@/components/cart/CartButton';
+import { DishCard } from '@/components/menu/DishCard';
+import { DishModal } from '@/components/menu/DishModal';
+import { useCart } from '@/context/cart-context';
 
 // Navigation Component - Modern Floating Design
 function Navigation({ currentPage, setCurrentPage, info }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { itemCount, openCart } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -18,7 +24,7 @@ function Navigation({ currentPage, setCurrentPage, info }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'Menu', 'About', 'Contact', 'Order'];
+  const navItems = ['Home', 'Menu', 'About', 'Contact'];
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'py-2' : 'py-4'}`}>
@@ -52,14 +58,27 @@ function Navigation({ currentPage, setCurrentPage, info }) {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <a
-            href={`tel:${info?.phone || '+919945871208'}`}
-            className="hidden md:flex items-center gap-2 bg-[#C41E3A] hover:bg-[#a8182f] px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#C41E3A]/20"
-          >
-            <Phone size={14} />
-            <span>Call Now</span>
-          </a>
+          {/* CTA Buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              onClick={openCart}
+              className="relative flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-medium transition-all"
+            >
+              🛒 Cart
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#C41E3A] text-white text-xs rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+            <a
+              href={`tel:${info?.phone || '+919945871208'}`}
+              className="flex items-center gap-2 bg-[#C41E3A] hover:bg-[#a8182f] px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#C41E3A]/20"
+            >
+              <Phone size={14} />
+              <span>Call Now</span>
+            </a>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -85,9 +104,15 @@ function Navigation({ currentPage, setCurrentPage, info }) {
                 {item}
               </button>
             ))}
+            <button
+              onClick={() => { openCart(); setIsMenuOpen(false); }}
+              className="flex items-center justify-center gap-2 mt-3 bg-white/5 hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-all w-full"
+            >
+              🛒 View Cart {itemCount > 0 && `(${itemCount})`}
+            </button>
             <a
               href={`tel:${info?.phone || '+919945871208'}`}
-              className="flex items-center justify-center gap-2 mt-3 bg-[#C41E3A] hover:bg-[#a8182f] px-4 py-3 rounded-xl text-sm font-medium transition-all"
+              className="flex items-center justify-center gap-2 mt-2 bg-[#C41E3A] hover:bg-[#a8182f] px-4 py-3 rounded-xl text-sm font-medium transition-all"
             >
               <Phone size={16} />
               <span>Call Now</span>
@@ -100,7 +125,7 @@ function Navigation({ currentPage, setCurrentPage, info }) {
 }
 
 // Hero Section - Premium Dark Design
-function HeroSection({ info }) {
+function HeroSection({ info, setCurrentPage }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505]">
       {/* Deep Dark Background with Visible Image */}
@@ -124,7 +149,7 @@ function HeroSection({ info }) {
         <div className="mb-6 animate-fade-in">
           <span className="inline-flex items-center gap-2.5 px-5 py-2 bg-[#0A0A0A]/80 backdrop-blur-sm border border-[#D4AF37]/20 rounded-full text-[#D4AF37] text-[11px] font-medium tracking-[0.15em] uppercase">
             <span className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full animate-pulse"></span>
-            Authentic Chinese Cuisine
+            Order Online Now
           </span>
         </div>
 
@@ -159,20 +184,20 @@ function HeroSection({ info }) {
 
         {/* CTA Buttons */}
         <div className="flex items-center justify-center gap-3 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <a
-            href={`tel:${info?.phone || '+919945871208'}`}
-            className="group relative overflow-hidden bg-[#C41E3A] hover:bg-[#a8182f] px-6 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#C41E3A]/20"
+          <Button
+            onClick={() => setCurrentPage('Menu')}
+            className="group relative overflow-hidden bg-[#C41E3A] hover:bg-[#a8182f] px-8 py-6 rounded-full text-base font-semibold flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#C41E3A]/20"
           >
-            <Phone size={15} />
-            <span>Call Now</span>
-          </a>
+            🍜 Order Now
+            <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </Button>
           <a
             href={`https://wa.me/${info?.whatsapp?.replace(/[^0-9]/g, '') || '919945871208'}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="group bg-[#1A1A1A] hover:bg-[#222] border border-[#2A2A2A] px-6 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 transition-all duration-300"
+            className="group bg-[#1A1A1A] hover:bg-[#222] border border-[#2A2A2A] px-6 py-4 rounded-full text-sm font-medium flex items-center gap-2 transition-all duration-300"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
             <span className="text-gray-300">WhatsApp</span>
           </a>
         </div>
@@ -196,15 +221,9 @@ function HeroSection({ info }) {
 }
 
 // Featured Dishes Section
-function FeaturedDishes({ dishes, categories, setCurrentPage }) {
-  // Filter to show only featured dishes, or first 6 if none marked as featured
+function FeaturedDishes({ dishes, categories, setCurrentPage, onViewDish }) {
   const featuredDishes = dishes?.filter(d => d.isFeatured) || [];
   const displayDishes = featuredDishes.length > 0 ? featuredDishes.slice(0, 6) : dishes?.slice(0, 6) || [];
-
-  const getCategoryName = (catId) => {
-    const cat = categories?.find(c => c.id === catId);
-    return cat?.name || 'Special';
-  };
 
   return (
     <section className="py-12 sm:py-20 bg-[#0A0A0A]">
@@ -222,38 +241,12 @@ function FeaturedDishes({ dishes, categories, setCurrentPage }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {displayDishes.map((dish, index) => (
-            <Card key={dish.id} className="bg-[#1A1A1A] border-gray-800 overflow-hidden group hover:border-[#C41E3A] transition-all duration-300 hover-glow animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-              <div className="relative h-56 overflow-hidden">
-                <img
-                  src={dish.image || 'https://images.pexels.com/photos/2670327/pexels-photo-2670327.jpeg'}
-                  alt={dish.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                <Badge className="absolute top-4 left-4 bg-[#C41E3A] hover:bg-[#C41E3A]">
-                  {getCategoryName(dish.category)}
-                </Badge>
-                {dish.isFeatured && (
-                  <Badge className="absolute top-4 right-4 bg-[#D4AF37] text-black">
-                    <Star size={12} className="mr-1" fill="currentColor" /> Chef's Pick
-                  </Badge>
-                )}
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold text-white mb-2">{dish.name}</h3>
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{dish.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-[#D4AF37]">₹{dish.price}</span>
-                  <div className="flex items-center gap-1 text-yellow-500">
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                    <Star size={16} fill="currentColor" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <DishCard
+              key={dish.id}
+              dish={dish}
+              category={categories?.find(c => c.id === dish.category)}
+              onViewDetails={onViewDish}
+            />
           ))}
         </div>
 
@@ -298,18 +291,19 @@ function TrustSection() {
   );
 }
 
-// Menu Page
-function MenuPage({ dishes, categories }) {
+// Menu Page with Search and Filters
+function MenuPage({ dishes, categories, onViewDish }) {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
 
-  const filteredDishes = activeCategory === 'all'
-    ? dishes
-    : dishes?.filter(d => d.category === activeCategory);
-
-  const getCategoryName = (catId) => {
-    const cat = categories?.find(c => c.id === catId);
-    return cat?.name || 'Special';
-  };
+  const filteredDishes = dishes?.filter(dish => {
+    const matchesCategory = activeCategory === 'all' || dish.category === activeCategory;
+    const matchesSearch = !searchQuery ||
+      dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dish.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  }) || [];
 
   return (
     <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 min-h-screen bg-[#0A0A0A]">
@@ -320,6 +314,20 @@ function MenuPage({ dishes, categories }) {
             <span className="text-white">Delicious</span>{' '}
             <span className="text-gradient-gold">Menu</span>
           </h1>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-md mx-auto mb-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+            <Input
+              type="text"
+              placeholder="Search dishes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-12 bg-[#1A1A1A] border-gray-800 text-white placeholder:text-gray-500 rounded-full"
+            />
+          </div>
         </div>
 
         {/* Category Tabs */}
@@ -345,38 +353,21 @@ function MenuPage({ dishes, categories }) {
 
         {/* Dishes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredDishes?.map((dish, index) => (
-            <Card key={dish.id} className="bg-[#1A1A1A] border-gray-800 overflow-hidden group hover:border-[#C41E3A] transition-all duration-300 animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={dish.image || 'https://images.pexels.com/photos/2670327/pexels-photo-2670327.jpeg'}
-                  alt={dish.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                <Badge className="absolute top-3 left-3 bg-[#C41E3A]/90 hover:bg-[#C41E3A] text-xs">
-                  {getCategoryName(dish.category)}
-                </Badge>
-                {dish.available && (
-                  <Badge className="absolute top-3 right-3 bg-green-600 hover:bg-green-600 text-xs">
-                    Available
-                  </Badge>
-                )}
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-semibold text-white mb-1">{dish.name}</h3>
-                <p className="text-gray-400 text-sm mb-3 line-clamp-2">{dish.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-bold text-[#D4AF37]">₹{dish.price}</span>
-                </div>
-              </CardContent>
-            </Card>
+          {filteredDishes.map((dish, index) => (
+            <DishCard
+              key={dish.id}
+              dish={dish}
+              category={categories?.find(c => c.id === dish.category)}
+              onViewDetails={onViewDish}
+            />
           ))}
         </div>
 
-        {filteredDishes?.length === 0 && (
+        {filteredDishes.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">No dishes available in this category</p>
+            <p className="text-gray-400 text-lg">
+              {searchQuery ? `No dishes found for "${searchQuery}"` : 'No dishes available in this category'}
+            </p>
           </div>
         )}
       </div>
@@ -529,72 +520,6 @@ function ContactPage({ info }) {
   );
 }
 
-// Order Page
-function OrderPage({ info }) {
-  return (
-    <section className="pt-32 pb-20 min-h-screen bg-[#0A0A0A]">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <span className="text-[#C41E3A] text-sm font-medium tracking-wider uppercase">Hungry?</span>
-          <h1 className="font-display text-4xl md:text-6xl font-bold mt-4 mb-6">
-            <span className="text-white">Order</span>{' '}
-            <span className="text-gradient-gold">Online</span>
-          </h1>
-          <p className="text-gray-400 max-w-xl mx-auto">
-            Get your favorite Chinese dishes delivered to your doorstep
-          </p>
-        </div>
-
-        <div className="max-w-3xl mx-auto grid gap-6">
-          <a href={info?.zomato || 'https://www.zomato.com/mumbai/red-dragon-restaurant-mira-road'} target="_blank" rel="noopener noreferrer" className="glass-effect p-8 rounded-3xl flex items-center gap-6 hover:border-[#E23744] transition-all group">
-            <div className="w-20 h-20 bg-[#E23744] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 17.5c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5zm-11 0c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5z" /></svg>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-white mb-2">Order on Zomato</h3>
-              <p className="text-gray-400">Get exclusive offers and fast delivery</p>
-            </div>
-            <ChevronRight size={32} className="text-gray-400 group-hover:text-[#E23744] group-hover:translate-x-2 transition-all" />
-          </a>
-
-          <a href={info?.swiggy || 'https://www.swiggy.com'} target="_blank" rel="noopener noreferrer" className="glass-effect p-8 rounded-3xl flex items-center gap-6 hover:border-[#FF5722] transition-all group">
-            <div className="w-20 h-20 bg-[#FF5722] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 17.5c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5zm-11 0c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5z" /></svg>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-white mb-2">Order on Swiggy</h3>
-              <p className="text-gray-400">Super fast delivery at your door</p>
-            </div>
-            <ChevronRight size={32} className="text-gray-400 group-hover:text-[#FF5722] group-hover:translate-x-2 transition-all" />
-          </a>
-
-          <a href={`https://wa.me/${info?.whatsapp?.replace(/[^0-9]/g, '') || '919945871208'}`} target="_blank" rel="noopener noreferrer" className="glass-effect p-8 rounded-3xl flex items-center gap-6 hover:border-green-600 transition-all group">
-            <div className="w-20 h-20 bg-green-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-white mb-2">WhatsApp Order</h3>
-              <p className="text-gray-400">Direct order via WhatsApp</p>
-            </div>
-            <ChevronRight size={32} className="text-gray-400 group-hover:text-green-600 group-hover:translate-x-2 transition-all" />
-          </a>
-
-          <a href={`tel:${info?.phone || '+919945871208'}`} className="glass-effect p-8 rounded-3xl flex items-center gap-6 hover:border-[#C41E3A] transition-all group">
-            <div className="w-20 h-20 gradient-red rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Phone size={40} />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-white mb-2">Call to Order</h3>
-              <p className="text-gray-400">{info?.phone || '+91 99458 71208'}</p>
-            </div>
-            <ChevronRight size={32} className="text-gray-400 group-hover:text-[#C41E3A] group-hover:translate-x-2 transition-all" />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // Footer
 function Footer({ info, setCurrentPage }) {
   return (
@@ -619,7 +544,7 @@ function Footer({ info, setCurrentPage }) {
           <div>
             <h4 className="text-white font-semibold mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              {['Home', 'Menu', 'About', 'Contact', 'Order'].map(item => (
+              {['Home', 'Menu', 'About', 'Contact'].map(item => (
                 <li key={item}>
                   <button onClick={() => setCurrentPage(item)} className="text-gray-400 hover:text-[#C41E3A] transition-colors text-sm">
                     {item}
@@ -688,6 +613,7 @@ export default function App() {
   const [categories, setCategories] = useState([]);
   const [info, setInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedDish, setSelectedDish] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -718,6 +644,10 @@ export default function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage]);
+
+  const handleViewDish = (dish) => {
+    setSelectedDish(dish);
+  };
 
   if (loading) {
     return (
@@ -788,29 +718,40 @@ export default function App() {
 
       {currentPage === 'Home' && (
         <>
-          <HeroSection info={info} />
-          <FeaturedDishes dishes={dishes} categories={categories} setCurrentPage={setCurrentPage} />
+          <HeroSection info={info} setCurrentPage={setCurrentPage} />
+          <FeaturedDishes
+            dishes={dishes}
+            categories={categories}
+            setCurrentPage={setCurrentPage}
+            onViewDish={handleViewDish}
+          />
           <TrustSection />
         </>
       )}
 
-      {currentPage === 'Menu' && <MenuPage dishes={dishes} categories={categories} />}
+      {currentPage === 'Menu' && (
+        <MenuPage
+          dishes={dishes}
+          categories={categories}
+          onViewDish={handleViewDish}
+        />
+      )}
       {currentPage === 'About' && <AboutPage info={info} />}
       {currentPage === 'Contact' && <ContactPage info={info} />}
-      {currentPage === 'Order' && <OrderPage info={info} />}
 
       <Footer info={info} setCurrentPage={setCurrentPage} />
 
-      {/* Floating WhatsApp Button */}
-      <a
-        href={`https://wa.me/${info?.whatsapp?.replace(/[^0-9]/g, '') || '919945871208'}?text=Hi! I would like to place an order from Red Dragon Restaurant.`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 hover:scale-110 transition-all animate-pulse"
-        aria-label="Chat on WhatsApp"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
-      </a>
+      {/* Cart Components */}
+      <CartDrawer />
+      <CartButton />
+
+      {/* Dish Detail Modal */}
+      <DishModal
+        dish={selectedDish}
+        category={categories?.find(c => c.id === selectedDish?.category)}
+        isOpen={!!selectedDish}
+        onClose={() => setSelectedDish(null)}
+      />
     </main>
   );
 }
